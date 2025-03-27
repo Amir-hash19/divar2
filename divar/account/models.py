@@ -28,8 +28,28 @@ class UserAccountManager(BaseUserManager):
 class UserAccount(AbstractBaseUser):
     email = models.EmailField(max_length=120, unique=True)
     name = models.CharField(max_length=100)
+    lastname = models.CharField(max_length=120)
     is_active = models.BooleanField(default=True)
     is_staff = models.BooleanField(default=False)
+    age = models.PositiveIntegerField(default=0)
+    is_superuser = models.BooleanField(default=False)
+
+
+
+    class Meta:
+        constraints = [
+            models.CheckConstraint(condition=models.Q(age__gte=18), name="age_gte_18")
+        ]
+
+    class Meta:
+        unique_together =[["email", "name"]]
+
+    class Meta:
+        indexes = [
+            models.Index(fields=["name"])
+        ]    
+        
+
 
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = ['name']
