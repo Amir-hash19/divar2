@@ -20,8 +20,8 @@ from django.urls import path, include
 urlpatterns = [
     path('admin/', admin.site.urls),
     path("", include("account.urls")),
+    path("product", include("product.urls")),
 ]
-
 
 admin.site.site_header = "AmirAmazone"
 admin.site.site_title = "amir-bazzar:)"
