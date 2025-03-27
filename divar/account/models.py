@@ -42,7 +42,7 @@ class UserAccount(AbstractBaseUser):
         ]
 
     class Meta:
-        unique_together =[["email", "name"]]
+        unique_together =[["name", "lastname"]]
 
     class Meta:
         indexes = [

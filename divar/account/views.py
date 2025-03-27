@@ -77,7 +77,9 @@ def get_user(request, user_id):
     except UserAccount.DoesNotExist:
         return JsonResponse({"error":"User not found"}, status=404)
 
-                
+
+
+
 
 
     
