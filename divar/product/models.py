@@ -20,8 +20,8 @@ class Product(models.Model):
 
 
 class Category(models.Model):
-    title = models.CharField(max_length=100, unique=True, null=False, blank=False)
-    slug = models.SlugField(max_length=1560, unique=True)
+    title = models.CharField(max_length=100, unique=True)
+    slug = models.SlugField(max_length=100)
 
 
     def __str__(self):
