@@ -1,14 +1,19 @@
 from django.contrib import admin
 from product.models import Product, Payment, Category, Order
+from .widgets import RichTextEditorWidget
+from django.db import models
 
 
-@admin.register(Product)
+
 class ProductAdmin(admin.ModelAdmin):
     list_display = ("title", "date_created", "price")
     list_filter = ("price", "date_created")
     search_fields = ("price", "slug")
     fields = (("title", "price"), "description","quantity" , "category")
 
+    formfield_overrides = {
+        models.TextField: {"widget": RichTextEditorWidget},  
+    }
 
 
     @admin.display(empty_value="???")
@@ -22,5 +27,6 @@ class ProductAdmin(admin.ModelAdmin):
         return ("slug", "date_created")
     
     
+admin.site.register(Product, ProductAdmin)
     
 
