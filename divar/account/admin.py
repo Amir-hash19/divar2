@@ -2,6 +2,10 @@ from django.contrib import admin
 from .models import UserAccount
 from django.utils import timezone
 
+
+
+
+@admin.register(UserAccount)
 class UserAccountAdmin(admin.ModelAdmin):
     list_display = ("name", "lastname", "email", "age")
     list_filter = ("name","email")
@@ -24,6 +28,5 @@ class UserAccountAdmin(admin.ModelAdmin):
     set_emails_to_null.short_description = "mark selected users emails to none"
         
          
-admin.site.register(UserAccount, UserAccountAdmin)
 
 

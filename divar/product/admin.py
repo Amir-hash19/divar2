@@ -1,8 +1,26 @@
 from django.contrib import admin
-from product.models import Product, Order, Payment, Category
+from product.models import Product, Payment, Category, Order
 
 
-admin.site.register(Category)
-admin.site.register(Product)
-admin.site.register(Order)
-admin.site.register(Payment)
+@admin.register(Product)
+class ProductAdmin(admin.ModelAdmin):
+    list_display = ("title", "date_created", "price")
+    list_filter = ("price", "date_created")
+    search_fields = ("price", "slug")
+    fields = (("title", "price"), "description","quantity" , "category")
+
+
+
+    @admin.display(empty_value="???")
+    def view_date_created(self, obj):
+        return obj.date_created.strftime("%Y-%M-%D") if obj.date_created else "???"
+    
+
+    def get_ordering(self, request):
+        if request.user.is_superuser:
+            return ("title", "price")
+        return ("slug", "date_created")
+    
+    
+    
+

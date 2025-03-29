@@ -196,7 +196,9 @@ def update_category(request, category_id):
     return JsonResponse({"error": "Invalid request method"}, status=405)
 
 
-            
+
+
+
                 
 
         
