@@ -10,7 +10,7 @@ class RichTextEditorWidget(forms.Textarea):
 
     def render(self, name, value, attrs=None, renderer=None):
         if not value:
-            value = ""  # مقدار پیش‌فرض
+            value = ""  
 
         html = f"""
         <div id="editor-container" style="height: 200px;">{value}</div>
@@ -28,4 +28,4 @@ class RichTextEditorWidget(forms.Textarea):
             }});
         </script>
         """
-        return mark_safe(html)  # تبدیل HTML به خروجی امن برای نمایش در Django Admin
+        return mark_safe(html) 

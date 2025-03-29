@@ -26,7 +26,10 @@ class ProductAdmin(admin.ModelAdmin):
             return ("title", "price")
         return ("slug", "date_created")
     
-    
+
 admin.site.register(Product, ProductAdmin)
+admin.site.register(Category)
+admin.site.register(Order)
+admin.site.register(Payment)
     
 
