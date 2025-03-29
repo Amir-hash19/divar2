@@ -116,36 +116,55 @@ def display_category(request, category_id):
 
 
 
+
 @csrf_exempt
 def update_product(request, product_id):
     try:
         product = Product.objects.get(id=product_id)
     except Product.DoesNotExist:
-        return JsonResponse({"error":"User not found"}, status=404)
-    
-    if request.method in ["PUT","PATCH"]:
-        data = json.loads(request.body)
-        if request.method == "PUT":
-            product.title = data.get("title", product.title)
-            product.price = data.get("price", product.price)
-            product.description = data.get("description", product.description)
-            product.slug = data.get("slug", product.slug)
-            product.quantity = data.get("quantity", product.quantity)
-            product.category = data.get("category", product.category.id)
+        return JsonResponse({"error": "Product not found"}, status=404)
 
-        elif request.method == "PATCH":
-            if "title" in data:
-                product.title = data["title"]
-            if "price" in data:
-                product.price = data["price"]
-            if "description" in data:
-                product.description = data["description"]
-            if "slug" in data:
-                product.slug = data["slug"]  
-            if "quantity" in data:
-                product.quantity = data["quantity"]       
-        product.save()
-        return HttpResponse("The product updated successfully!")
+    if request.method in ["PUT", "PATCH"]:
+        try:
+            data = json.loads(request.body)
+        except json.JSONDecodeError:
+            return JsonResponse({"error": "Invalid JSON format"}, status=400)
+
+        try:
+            if request.method == "PUT":
+                product.title = data.get("title", product.title)
+                product.price = float(data.get("price", product.price))  
+                product.description = data.get("description", product.description)
+                product.slug = data.get("slug", product.slug)
+                product.quantity = int(data.get("quantity", product.quantity)) 
+
+                if "category" in data:
+                    product.category = Category.objects.get(id=int(data["category"])) 
+            elif request.method == "PATCH":
+                if "title" in data:
+                    product.title = data["title"]
+                if "price" in data:
+                    product.price = float(data["price"])
+                if "description" in data:
+                    product.description = data["description"]
+                if "slug" in data:
+                    product.slug = data["slug"]
+                if "quantity" in data:
+                    product.quantity = int(data["quantity"])
+                if "category" in data:
+                    product.category = Category.objects.get(id=int(data["category"]))
+
+            product.save()
+            return JsonResponse({"message": "The product updated successfully!"}, status=200)
+        except ValueError:
+            return JsonResponse({"error": "Invalid data type in request"}, status=400)
+        except Category.DoesNotExist:
+            return JsonResponse({"error": "Category not found"}, status=400)
+
+    return JsonResponse({"error": "Invalid request method"}, status=405)
+
+
+
 
 
 
@@ -154,19 +173,29 @@ def update_category(request, category_id):
     try:
         category = Category.objects.get(id=category_id)
     except Category.DoesNotExist:
-        return JsonResponse({"error":"Category not found"})
-    if request.method == ["PUT","PATCH"]:
-        data = json.loads(request.body)
+        return JsonResponse({"error": "Category not found"}, status=404)
+
+    if request.method in ["PUT", "PATCH"]:
+        try:
+            data = json.loads(request.body)
+        except json.JSONDecodeError:
+            return JsonResponse({"error": "Invalid JSON"}, status=400)
+
         if request.method == "PUT":
-            category.title == data.get("title",Category.title)
-            Category.slug = data.get("slug", Category.price)
+            category.title = data.get("title", category.title)
+            category.slug = data.get("slug", category.slug)
         elif request.method == "PATCH":
-                if "title" in data:
-                    Category.title = data["title"]
-                if "slug" in data:
-                    Category.slug = data["slug"]
+            if "title" in data:
+                category.title = data["title"]
+            if "slug" in data:
+                category.slug = data["slug"]
+
         category.save()
-        return HttpResponse("The category updated successfully")        
+        return JsonResponse({"message": "The category updated successfully"}, status=200)
+
+    return JsonResponse({"error": "Invalid request method"}, status=405)
+
+
             
                 
 
