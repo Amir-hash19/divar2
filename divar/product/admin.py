@@ -5,11 +5,12 @@ from django.db import models
 
 
 
+@admin.register(Product)
 class ProductAdmin(admin.ModelAdmin):
     list_display = ("title", "date_created", "price")
     list_filter = ("price", "date_created")
     search_fields = ("price", "slug")
-    fields = (("title", "price"), "description","quantity" , "category")
+    fields = (("title", "category"), "description","quantity" , "price")
 
     formfield_overrides = {
         models.TextField: {"widget": RichTextEditorWidget},  
@@ -27,9 +28,49 @@ class ProductAdmin(admin.ModelAdmin):
         return ("slug", "date_created")
     
 
-admin.site.register(Product, ProductAdmin)
-admin.site.register(Category)
-admin.site.register(Order)
+
+
+
+@admin.register(Category)
+class CategoryAdmin(admin.ModelAdmin):
+    list_display = ("title", "slug")
+    list_filter = ("title", )
+    search_fields = ("title", "slug")
+    actions = ("set_slug_to_null", )
+    list_per_page = 20
+
+
+
+    def set_slug_to_null(self, request, queryset):
+        slug_status = queryset.update(slug=None)
+        self.message_user(request, "{}Category Slug set to None Successfully!".format(slug_status))
+
+
+    set_slug_to_null.short_description = "Mark Selected Category Slug set to None" 
+
+        
+    
+
+
+@admin.register(Order)
+class OrderAdmin(admin.ModelAdmin):
+    list_display = ("user", "payment", "date_order", "tracking_code")
+    list_filter = ("user", "payment", "tracking_code")
+    search_fields = ("user", "payment", "tracking_code", "date_order")
+    fields = (("user", "total_price") ,"payment", "date_order")
+    list_per_page = 30
+
+
+    def set_totalprice_to_null(self, request, queryset):
+        total_price_status = queryset.update(total_price=None)
+        self.message_user(request, "{}Order totalprice set to None Successfully!".format(total_price_status))
+
+
+    set_totalprice_to_null.short_description = "Mark Selected Category Slug set to None" 
+    
+
+
+    
 admin.site.register(Payment)
     
 
